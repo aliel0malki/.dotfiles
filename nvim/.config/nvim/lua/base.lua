@@ -1,38 +1,41 @@
-local opt = vim.opt
-opt.signcolumn = 'no'
-opt.number = true
-opt.relativenumber = true
+vim.opt.guicursor = ""
 
-vim.o.wrap = false
-vim.opt.guicursor = "n-v-i-c:block-Cursor"
+vim.opt.nu = true
+vim.opt.relativenumber = true
 
-opt.scrolloff = 5
-opt.sidescrolloff = 5
+vim.opt.tabstop = 2
+vim.opt.softtabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
 
-opt.hlsearch = true
-opt.incsearch = true
+vim.opt.smartindent = true
 
-opt.mouse:append 'a'
-opt.clipboard:append 'unnamedplus'
+vim.opt.wrap = false
 
-opt.tabstop = 2
-opt.shiftwidth = 2
-opt.expandtab = true
-opt.autoindent = true
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.undofile = true
 
-opt.ignorecase = true
-opt.smartcase = true
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
 
-opt.swapfile = false
-opt.autoread = true
-vim.bo.autoread = true
+vim.opt.termguicolors = true
 
--- opt.cursorline = true
-opt.termguicolors = true
+vim.opt.scrolloff = 8
+vim.opt.signcolumn = "yes"
+vim.opt.isfname:append("@-@")
+
+vim.opt.updatetime = 50
+
+vim.opt.colorcolumn = "80"
 
 -- highlight on yank
 vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function()
     vim.highlight.on_yank()
   end,
+})
+
+vim.diagnostic.config({
+  virtual_text = false,
 })

@@ -10,15 +10,9 @@ plug "Aloxaf/fzf-tab"
 plug "wintermi/zsh-lsd" 
 export VI_MODE_ESC_INSERT="jk" && plug "zap-zsh/vim" 
 
-# Load and initialize completion system with caching
-autoload -Uz compinit
-compinit -C  # Avoid recomputation of completion cache
-zstyle ':completion:*' rehash true  # Enable rehashing
-
 # Aliases
-alias vi=nvim
-alias .=vi
 alias v="vi"
+alias t="tmux"
 alias q="exit"
 alias c="clear"
 alias mount='mount |column -t'
@@ -53,12 +47,5 @@ tmux () {
     SHELL=/bin/zsh script -qO /dev/null -c "eval $TMUX";
 }
 
-# Bun completions
-[ -s "/home/alewa/.bun/_bun" ] && source "/home/alewa/.bun/_bun"
-
-# Rehash to refresh the shell's knowledge of executables
-rehash
-
-# Optimize completion system loading
-autoload -Uz compinit
-compinit -C  # Use -C to skip recompiling cache every session
+alias tmux-sessionizer='~/tmux-sessionizer.sh'
+bindkey -s '^f' 'tmux-sessionizer\n'
