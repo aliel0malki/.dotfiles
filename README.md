@@ -1,9 +1,3 @@
 ```
-stow .
-```
-
-OR
-
-```
-stow (config name)
+bash install.sh
 ```
