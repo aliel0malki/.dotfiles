@@ -7,11 +7,9 @@ plug "zap-zsh/supercharge"
 plug "wintermi/zsh-starship" 
 plug "zsh-users/zsh-syntax-highlighting" 
 plug "Aloxaf/fzf-tab" 
-plug "wintermi/zsh-lsd" 
-export VI_MODE_ESC_INSERT="jk" && plug "zap-zsh/vim" 
 
 # Aliases
-alias v="vi"
+alias v="nvim"
 alias t="tmux"
 alias q="exit"
 alias c="clear"
