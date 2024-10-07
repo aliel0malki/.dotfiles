@@ -47,3 +47,4 @@ tmux () {
 
 alias tmux-sessionizer='~/tmux-sessionizer.sh'
 bindkey -s '^f' 'tmux-sessionizer\n'
+

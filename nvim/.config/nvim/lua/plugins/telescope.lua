@@ -4,6 +4,7 @@ return {
     "nvim-lua/plenary.nvim",
     "nvim-tree/nvim-web-devicons",
     { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+    "debugloop/telescope-undo.nvim",
   },
   config = function()
     require("telescope").setup {
@@ -19,9 +20,18 @@ return {
           override_file_sorter = true,
           case_mode = "smart_case",
         },
+        undo = {
+          side_by_side = true,
+          layout_strategy = "vertical",
+          layout_config = {
+            preview_height = 0.8,
+          },
+        },
       },
     }
     require("telescope").load_extension("fzf")
+
+    vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
 
     vim.keymap.set("n", "<leader>ff",
       function() require('telescope.builtin').find_files({ prompt_title = 'Find Files' }) end)

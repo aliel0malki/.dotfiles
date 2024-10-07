@@ -1,0 +1,43 @@
+[language-server.emmet-ls]
+command = "emmet-ls"
+args = ["--stdio"]
+
+[[language]]
+name = "html"
+auto-format = true
+language-servers = ["vscode-html-language-server", "emmet-ls"]
+formatter = { command = 'prettier', args = ["--parser", "html"] }
+
+[[language]]
+name = "typescript"
+auto-format = true
+language-servers = ["typescript-language-server", "vscode-eslint-language-server"]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+
+[[language]]
+name = "javascript"
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+language-servers = ["typescript-language-server"]
+auto-format = true
+
+[[language]]
+name = "tsx"
+auto-format = true
+language-servers = ["typescript-language-server", "vscode-eslint-language-server", "emmet-ls", "tailwindcss-ls"]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+
+[[language]]
+name = "jsx"
+auto-format = true
+language-servers = ["typescript-language-server", "vscode-eslint-language-server", "emmet-ls", "tailwindcss-ls"]
+formatter = { command = 'prettier', args = ["--parser", "typescript"] }
+
+[[language]]
+name = "json"
+formatter = { command = 'prettier', args = ["--parser", "json"] }
+
+
+[[language]]
+name = "go"
+auto-format = true
+formatter = { command = "goimports" }

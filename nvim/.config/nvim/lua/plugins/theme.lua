@@ -1,35 +1,36 @@
-return {
-  "rose-pine/neovim",
-  name = "rose-pine",
-  priority = 1000,
-  config = function()
-    vim.opt.termguicolors = true
-    vim.opt.laststatus = 2 -- Or 3 for global statusline
-    vim.opt.statusline = " %t %m %= %l:%c "
-    require("rose-pine").setup({
-      variant = "main",
-      dark_variant = "main",
-      dim_inactive_windows = false,
-      disable_background = true,
-      extend_background_behind_borders = true,
-      enable = {
-        terminal = true,
-        legacy_highlights = true,
-        migrations = true,
-      },
-      styles = {
-        bold = true,
-        italic = false,
-        transparency = false,
-      },
-      highlight_groups = {
-        StatusLine = { fg = "love", bg = "love", blend = 10 },
-        StatusLineNC = { fg = "subtle", bg = "surface" },
-      },
-    })
+function ColorMyPencils(color)
+  color = color or "rose-pine"
+  vim.cmd.colorscheme(color)
+end
 
-    vim.cmd("colorscheme rose-pine")
-    vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-  end
+return {
+  {
+    "folke/tokyonight.nvim",
+    config = function()
+      require("tokyonight").setup({
+        style = "storm",
+        transparent = false,
+        terminal_colors = true,
+        styles = {
+          comments = { italic = false },
+          keywords = { italic = false },
+          sidebars = "dark",
+          floats = "dark",
+        },
+      })
+    end,
+  },
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    config = function()
+      require("rose-pine").setup({
+        disable_italic = true,
+        disable_background = false
+      })
+
+      vim.cmd("colorscheme rose-pine")
+      ColorMyPencils()
+    end,
+  },
 }
