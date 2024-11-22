@@ -60,11 +60,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"windwp/nvim-autopairs",
-		event = "InsertEnter",
-		config = true,
-	},
-	{
 		"nvim-treesitter/nvim-treesitter",
 		build = ":TSUpdate",
 		dependencies = {
@@ -104,7 +99,6 @@ require("lazy").setup({
 			{ "m00qek/baleia.nvim", tag = "v1.3.0" },
 		},
 		config = function()
-			---@type CompileModeOpts
 			vim.g.compile_mode = {
 				baleia_setup = true,
 			}
@@ -144,6 +138,50 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"neoclide/coc.nvim",
+		branch = "release",
+		config = function()
+			local keyset = vim.keymap.set
+			local opts = { silent = true, noremap = true, expr = true, replace_keycodes = false }
+			keyset("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]],
+				opts)
+			keyset("i", "<c-l>", "<Plug>(coc-snippets-expand-jump)")
+			keyset("n", "[d", "<Plug>(coc-diagnostic-prev)", { silent = true })
+			keyset("n", "]d", "<Plug>(coc-diagnostic-next)", { silent = true })
+			keyset("n", "gd", "<Plug>(coc-definition)", { silent = true })
+			keyset("n", "gy", "<Plug>(coc-type-definition)", { silent = true })
+			keyset("n", "gi", "<Plug>(coc-implementation)", { silent = true })
+			keyset("n", "gr", "<Plug>(coc-references)", { silent = true })
+			keyset("n", "C-k", "<Plug>(coc-diagnostic-prev)", { silent = true })
+			function _G.show_docs()
+				local cw = vim.fn.expand('<cword>')
+				if vim.fn.index({ 'vim', 'help' }, vim.bo.filetype) >= 0 then
+					vim.api.nvim_command('h ' .. cw)
+				elseif vim.api.nvim_eval('coc#rpc#ready()') then
+					vim.fn.CocActionAsync('doHover')
+				else
+					vim.api.nvim_command('!' .. vim.o.keywordprg .. ' ' .. cw)
+				end
+			end
+
+			keyset("n", "K", '<CMD>lua _G.show_docs()<CR>', { silent = true })
+			vim.api.nvim_create_augroup("CocGroup", {})
+			vim.api.nvim_create_autocmd("CursorHold", {
+				group = "CocGroup",
+				command = "silent call CocActionAsync('highlight')",
+				desc = "Highlight symbol under cursor on CursorHold"
+			})
+			keyset("n", "<leader>rn", "<Plug>(coc-rename)", { silent = true })
+			keyset("x", "<leader>fm", "<Plug>(coc-format-selected)", { silent = true })
+			-- Mappings for CoCList
+			-- code actions and coc stuff
+			---@diagnostic disable-next-line: redefined-local
+			local opts = { silent = true, nowait = true }
+			-- Show all diagnostics
+			keyset("n", "<leader>xx", ":<C-u>CocList diagnostics<cr>", opts)
+		end,
+	},
+	{
 		"ibhagwan/fzf-lua",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
@@ -153,30 +191,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>fb", require("fzf-lua").buffers)
 		end,
 	},
-
-	{ "VonHeikemen/lsp-zero.nvim", branch = "v4.x" },
-	{ "williamboman/mason.nvim" },
-	{ "williamboman/mason-lspconfig.nvim" },
-	{ "neovim/nvim-lspconfig" },
-	{ "L3MON4D3/LuaSnip" },
-	{ "hrsh7th/nvim-cmp" },
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
-	{ "saadparwaiz1/cmp_luasnip" },
-	{ "rafamadriz/friendly-snippets" },
-
-	{
-		"echasnovski/mini.nvim",
-		version = false,
-		config = function()
-			require("mini.ai").setup()
-			require("mini.comment").setup()
-			require("mini.surround").setup()
-			require("mini.align").setup()
-		end,
-	},
-
 	{
 		"stevearc/oil.nvim",
 		config = function()
@@ -193,67 +207,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader>ll", ":Neogit<CR>")
 		end,
 	},
-})
-
-local lsp_zero = require("lsp-zero")
-
-local lsp_attach = function(client, bufnr)
-	local opts = { buffer = bufnr }
-
-	vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-	vim.keymap.set("n", "<C-k>", "<cmd>lua vim.diagnostic.open_float()<cr>", opts)
-	vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-	vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-	vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-	vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-	vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-	vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-	vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-	vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-	vim.keymap.set("n", "ca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-	print("Attached " .. client.name)
-end
-
-lsp_zero.extend_lspconfig({
-	sign_text = true,
-	lsp_attach = lsp_attach,
-	float_border = "rounded",
-	capabilities = require("cmp_nvim_lsp").default_capabilities(),
-})
-
-require("mason").setup({})
-require("mason-lspconfig").setup({
-	handlers = {
-		function(server_name)
-			require("lspconfig")[server_name].setup({})
-		end,
-	},
-})
-
-local cmp = require("cmp")
-local cmp_action = lsp_zero.cmp_action()
-
-require("luasnip.loaders.from_vscode").lazy_load()
-
-cmp.setup({
-	sources = {
-		{ name = "path" },
-		{ name = "nvim_lsp" },
-		{ name = "luasnip", keyword_length = 3 },
-		{ name = "buffer", keyword_length = 3 },
-	},
-	snippet = {
-		expand = function(args)
-			require("luasnip").lsp_expand(args.body)
-		end,
-	},
-	mapping = cmp.mapping.preset.insert({
-		["<C-b>"] = cmp.mapping.scroll_docs(-4),
-		["<C-f>"] = cmp.mapping.scroll_docs(4),
-		["<C-Space>"] = cmp.mapping.complete(),
-		["<C-e>"] = cmp.mapping.abort(),
-		["<CR>"] = cmp.mapping.confirm({ select = true }),
-	}),
 })
 
 vim.keymap.set("n", "<leader>v", ":vsplit<CR>")
