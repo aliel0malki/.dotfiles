@@ -1,4 +1,4 @@
-minimal asf just to get shit done. also i dont like Coc. so gonna change it but later not now cuz im LAZY
+minimal asf just to get shit done. ~~also i dont like Coc. so gonna change it but later not now cuz im LAZY~~
 
 
  
