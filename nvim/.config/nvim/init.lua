@@ -25,6 +25,11 @@ vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.o.background = "dark"
 
+vim.diagnostic.config({
+	virtual_lines = true,
+
+})
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
 	vim.fn.system(
@@ -40,6 +45,45 @@ require("lazy").setup(
 			priority = 1000,
 			config = function()
 				vim.cmd("colorscheme darcula")
+			end
+		},
+		{
+			'windwp/nvim-autopairs',
+			event = "InsertEnter",
+			config = true,
+			opts = {},
+		},
+		{
+			"Exafunction/windsurf.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"hrsh7th/nvim-cmp",
+			},
+			config = function()
+				require("codeium").setup({
+					-- tools = {
+					-- 	language_server = "$HOME/dev-tools/nvim/language_server_linux_arm",
+					-- },
+					enable_cmp_source = false,
+					virtual_text = {
+						enabled = true,
+						manual = false,
+						filetypes = {},
+						default_filetype_enabled = true,
+						idle_delay = 75,
+						virtual_text_priority = 65535,
+						map_keys = true,
+						accept_fallback = nil,
+						key_bindings = {
+							accept = "<Tab>",
+							accept_word = false,
+							accept_line = false,
+							clear = false,
+							next = "<M-]>",
+							prev = "<M-[>",
+						}
+					}
+				})
 			end
 		},
 		{
@@ -208,21 +252,6 @@ require("lazy").setup(
 					["<C-k>"] = { "show", "show_documentation", "hide_documentation" },
 					["<CR>"] = { "accept", "fallback" },
 
-					["<Tab>"] = {
-						function(cmp)
-							return cmp.select_next()
-						end,
-						"snippet_forward",
-						"fallback",
-					},
-					["<S-Tab>"] = {
-						function(cmp)
-							return cmp.select_prev()
-						end,
-						"snippet_backward",
-						"fallback",
-					},
-
 					["<Up>"] = { "select_prev", "fallback" },
 					["<Down>"] = { "select_next", "fallback" },
 					["<C-p>"] = { "select_prev", "fallback" },
@@ -239,7 +268,7 @@ require("lazy").setup(
 					default = { "lsp", "path", "snippets", "buffer" },
 					providers = {
 						lsp = {
-							min_keyword_length = 1, -- Number of characters to trigger porvider
+							min_keyword_length = 0, -- Number of characters to trigger porvider
 							score_offset = 0, -- Boost/penalize the score of the items
 						},
 						path = {
@@ -249,7 +278,7 @@ require("lazy").setup(
 							min_keyword_length = 2,
 						},
 						buffer = {
-							min_keyword_length = 3,
+							min_keyword_length = 2,
 							max_items = 5,
 						},
 					},
@@ -301,6 +330,9 @@ vim.keymap.set("n", "<leader>x", ":tabclose<CR>")
 vim.keymap.set("n", "<leader>j", ":tabprevious<CR>")
 vim.keymap.set("n", "<leader>k", ":tabnext<CR>")
 vim.keymap.set("n", "<C-j>", "<C-w>w")
+vim.keymap.set("n", "<leader>i", function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+end, { desc = "Toggle Inlay Hints" })
 
 -- AutoCmds
 vim.api.nvim_create_autocmd(
