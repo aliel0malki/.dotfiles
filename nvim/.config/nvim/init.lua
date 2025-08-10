@@ -41,10 +41,11 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(
 	{
 		{
-			"doums/darcula",
+			"briones-gabriel/darcula-solid.nvim",
+			dependencies = { "rktjmp/lush.nvim" },
 			priority = 1000,
 			config = function()
-				vim.cmd("colorscheme darcula")
+				vim.cmd("colorscheme darcula-solid")
 			end
 		},
 		{
@@ -57,13 +58,9 @@ require("lazy").setup(
 			"Exafunction/windsurf.nvim",
 			dependencies = {
 				"nvim-lua/plenary.nvim",
-				"hrsh7th/nvim-cmp",
 			},
 			config = function()
 				require("codeium").setup({
-					-- tools = {
-					-- 	language_server = "$HOME/dev-tools/nvim/language_server_linux_arm",
-					-- },
 					enable_cmp_source = false,
 					virtual_text = {
 						enabled = true,
