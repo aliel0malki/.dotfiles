@@ -25,10 +25,9 @@ vim.opt.scrolloff = 8
 vim.opt.sidescrolloff = 8
 vim.o.background = "dark"
 
-vim.diagnostic.config({
-	virtual_lines = true,
-
-})
+vim.keymap.set("n", "<leader>dv", function()
+	vim.diagnostic.config({ virtual_lines = not vim.diagnostic.config().virtual_lines })
+end)
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
@@ -41,11 +40,12 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup(
 	{
 		{
-			"briones-gabriel/darcula-solid.nvim",
-			dependencies = { "rktjmp/lush.nvim" },
+			'Mofiqul/vscode.nvim',
+			-- "briones-gabriel/darcula-solid.nvim",
+			-- dependencies = { "rktjmp/lush.nvim" },
 			priority = 1000,
 			config = function()
-				vim.cmd("colorscheme darcula-solid")
+				vim.cmd("colorscheme vscode")
 			end
 		},
 		{
@@ -53,6 +53,17 @@ require("lazy").setup(
 			event = "InsertEnter",
 			config = true,
 			opts = {},
+		},
+		{
+			"lukas-reineke/indent-blankline.nvim",
+			main = "ibl",
+			---@module "ibl"
+			---@type ibl.config
+			opts = {
+				scope = {
+					enabled = true
+				}
+			},
 		},
 		{
 			"Exafunction/windsurf.nvim",
@@ -349,5 +360,27 @@ vim.api.nvim_create_autocmd(
 		end
 	}
 )
+
+-- lua/lsp_keymaps.lua
+local opts = { noremap = true, silent = true }
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+	callback = function(ev)
+		local bufopts = { buffer = ev.buf, noremap = true, silent = true }
+		vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
+		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+		vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
+		vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
+		vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
+		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
+		vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, bufopts)
+		vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, bufopts)
+		vim.keymap.set("n", "]d", vim.diagnostic.goto_next, bufopts)
+		vim.keymap.set("n", "<leader>da", vim.diagnostic.open_float, bufopts)
+		vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, bufopts)
+	end,
+})
 
 vim.keymap.set("n", "<leader><leader>", ":source ~/.config/nvim/init.lua<CR>")

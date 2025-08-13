@@ -20,14 +20,16 @@ alias ln='ln -i'
 alias du='du -ch'
 alias emacs='emacs -nw'
 
-# local bins
-export PATH=$HOME/.local/bin:$PATH
-export LOCAL_BIN=$HOME/.local/bin
-#
+# Local bins
+export LOCAL_BIN="$HOME/.local/bin"
+export PATH="$LOCAL_BIN:$PATH"
 export BUN_INSTALL="$LOCAL_BIN/bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 export PATH="$LOCAL_BIN/zig:$PATH"
-export PATH="$LOCAL_BIN/node:$PATH"
+export NODE_INSTALL="$LOCAL_BIN/node"
+export PATH="$NODE_INSTALL/bin:$PATH"
 
 alias tmux-sessionizer='~/tmux-sessionizer.sh'
 bind -x '"\C-f": tmux-sessionizer'
+
+eval "$(starship init bash)"
